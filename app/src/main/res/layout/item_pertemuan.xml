@@ -1,66 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    android:layout_marginHorizontal="4dp"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
-    app:cardCornerRadius="8dp">
+    app:cardBackgroundColor="@color/white">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical">
+        android:padding="16dp">
 
-        <ImageView
+        <TextView
+            android:id="@+id/tvNomor"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_my_calendar"
-            app:tint="#0066CC"
-            android:layout_marginEnd="16dp"/>
+            android:background="@drawable/bg_rounded_blue_light"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="#1565C0"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvJudul"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:text="Judul Pertemuan"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/tvNomor"
+            app:layout_constraintEnd_toStartOf="@id/btnEdit"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tvNomor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pertemuan 1"
-                android:textStyle="bold"
-                android:textColor="#0066CC"
-                android:textSize="12sp"/>
-
-            <TextView
-                android:id="@+id/tvJudul"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pengenalan Android"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="@android:color/black"/>
-
-            <TextView
-                android:id="@+id/tvDeskripsi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Deskripsi materi..."
-                android:textSize="14sp"
-                android:maxLines="1"
-                android:ellipsize="end"/>
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tvDeskripsi"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:text="Deskripsi singkat..."
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@id/tvNomor"
+            app:layout_constraintEnd_toStartOf="@id/btnEdit"
+            app:layout_constraintTop_toBottomOf="@id/tvJudul" />
 
         <ImageView
+            android:id="@+id/btnEdit"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@android:drawable/ic_media_play"
-            app:tint="#757575"/>
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+            android:src="@drawable/ic_edit"
+            android:layout_marginEnd="12dp"
+            app:tint="#1565C0"
+            app:layout_constraintEnd_toStartOf="@id/btnDelete"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/btnDelete"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_delete"
+            app:tint="#D32F2F"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

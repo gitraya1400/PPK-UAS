@@ -27,7 +27,6 @@ class LoginActivity : AppCompatActivity() {
 
         sessionManager = SessionManager(this)
 
-        // Cek jika sudah login sebelumnya
         checkSession()
 
         binding.btnLogin.setOnClickListener {
@@ -51,13 +50,15 @@ class LoginActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val body = response.body()
                     if (body != null) {
-                        // 1. Simpan Token & Data User
                         sessionManager.saveAuthToken(body.accessToken)
-                        // Ambil role pertama (biasanya list, kita ambil index 0)
-                        val role = body.roles.firstOrNull() ?: "DOSEN"
-                        sessionManager.saveUserDetail(body.id, role, body.username)
 
-                        // 2. Arahkan sesuai Role
+                        // FIX: Ambil role langsung dari String (tidak perlu firstOrNull)
+                        val role = body.role
+
+                        // Simpan ke session (ID kita set 0 dulu karena login tidak kirim ID)
+                        sessionManager.saveUserDetail(0L, role, body.name)
+
+                        // Pindah halaman sesuai role yang benar
                         navigateBasedOnRole(role)
                     }
                 } else {
@@ -72,12 +73,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun navigateBasedOnRole(role: String) {
-        if (role == "ADMIN") {
+        // Pastikan pengecekan String role sesuai (ADMIN/DOSEN)
+        if (role.equals("ADMIN", ignoreCase = true)) {
             startActivity(Intent(this, AdminMainActivity::class.java))
         } else {
             startActivity(Intent(this, DosenMainActivity::class.java))
         }
-        finish() // Tutup Login Activity agar tidak bisa di-back
+        finish()
     }
 
     private fun checkSession() {

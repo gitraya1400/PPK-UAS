@@ -11,5 +11,6 @@ data class MataKuliahDto(
     val deskripsi: String?,
     // Tambahan untuk Tahap 3
     @SerializedName("pertemuanList")
-    val pertemuanList: List<PertemuanDto>? = null
+    val pertemuanList: List<PertemuanDto>? = null,
+    val pengajarList: List<UserDto>? = null // Tambahkan ini!
 )

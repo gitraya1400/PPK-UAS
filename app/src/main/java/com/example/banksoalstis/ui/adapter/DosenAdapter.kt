@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.banksoalstis.databinding.ItemPertemuanBinding
-import com.example.banksoalstis.model.PertemuanDto
+import com.example.banksoalstis.model.UserDto
 
-class PertemuanAdapter(
-    private var list: List<PertemuanDto>,
-    private val onEdit: (PertemuanDto) -> Unit,   // Callback Edit
-    private val onDelete: (PertemuanDto) -> Unit  // Callback Hapus
-) : RecyclerView.Adapter<PertemuanAdapter.ViewHolder>() {
+class DosenAdapter(
+    private var list: List<UserDto>,
+    private val onClick: (UserDto) -> Unit,
+    private val onDelete: ((UserDto) -> Unit)? = null
+) : RecyclerView.Adapter<DosenAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemPertemuanBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -22,21 +22,20 @@ class PertemuanAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = list[position]
         with(holder.binding) {
-            tvNomor.text = item.nomorPertemuan.toString()
-            tvJudul.text = item.judul
-            tvDeskripsi.text = item.deskripsi ?: "-"
+            // PERBAIKAN DI SINI: Gunakan ID sesuai item_pertemuan.xml
+            tvJudul.text = item.name                // Nama Dosen
+            tvDeskripsi.text = "NIP: ${item.nip ?: "-"}"  // NIP
 
-            // Klik Tombol Pensil (Edit)
-            btnEdit.setOnClickListener { onEdit(item) }
+            // tvNomor kita isi teks statis atau nomor urut
+            tvNomor.text = "Pengajar ${position + 1}"
 
-            // Klik Tombol Sampah (Hapus)
-            btnDelete.setOnClickListener { onDelete(item) }
+            root.setOnClickListener { onClick(item) }
         }
     }
 
     override fun getItemCount() = list.size
 
-    fun updateData(newList: List<PertemuanDto>) {
+    fun updateData(newList: List<UserDto>) {
         list = newList
         notifyDataSetChanged()
     }

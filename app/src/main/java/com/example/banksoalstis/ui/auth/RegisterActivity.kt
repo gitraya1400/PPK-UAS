@@ -41,17 +41,18 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun doRegister(request: UserRegistrationDto) {
-        RetrofitClient.getInstance(this).register(request).enqueue(object : Callback<UserDto> {
-            override fun onResponse(call: Call<UserDto>, response: Response<UserDto>) {
+        // GANTI 'Callback<UserDto>' MENJADI 'Callback<Void>'
+        RetrofitClient.getInstance(this).register(request).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Toast.makeText(this@RegisterActivity, "Registrasi Berhasil! Silakan Login", Toast.LENGTH_LONG).show()
-                    finish() // Tutup halaman register, user login manual
+                    finish()
                 } else {
                     Toast.makeText(this@RegisterActivity, "Gagal: Email/NIP mungkin sudah dipakai", Toast.LENGTH_LONG).show()
                 }
             }
 
-            override fun onFailure(call: Call<UserDto>, t: Throwable) {
+            override fun onFailure(call: Call<Void>, t: Throwable) {
                 Toast.makeText(this@RegisterActivity, "Error koneksi: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })

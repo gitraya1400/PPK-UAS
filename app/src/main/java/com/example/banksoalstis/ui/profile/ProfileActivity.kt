@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.banksoalstis.api.RetrofitClient
 import com.example.banksoalstis.databinding.ActivityProfileBinding
-import com.example.banksoalstis.model.ApiResponse
 import com.example.banksoalstis.model.ChangePasswordDto
 import com.example.banksoalstis.model.UpdateProfileDto
 import com.example.banksoalstis.model.UserDto
@@ -33,8 +32,9 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun loadProfile() {
-        // Ambil data terbaru dari Server
-        RetrofitClient.getInstance(this).getProfile().enqueue(object : Callback<UserDto> {
+        val token = "Bearer ${sessionManager.getToken()}" // FIX: Pakai Token
+
+        RetrofitClient.getInstance(this).getProfile(token).enqueue(object : Callback<UserDto> {
             override fun onResponse(call: Call<UserDto>, response: Response<UserDto>) {
                 if (response.isSuccessful) {
                     val user = response.body()
@@ -52,6 +52,8 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
+        val token = "Bearer ${sessionManager.getToken()}" // FIX: Pakai Token untuk update juga
+
         // 1. Update Profil
         binding.btnUpdateProfile.setOnClickListener {
             val name = binding.etNama.text.toString()
@@ -63,12 +65,14 @@ class ProfileActivity : AppCompatActivity() {
             }
 
             val request = UpdateProfileDto(name, nip)
-            RetrofitClient.getInstance(this).updateProfile(request).enqueue(object : Callback<UserDto> {
+            RetrofitClient.getInstance(this).updateProfile(token, request).enqueue(object : Callback<UserDto> {
                 override fun onResponse(call: Call<UserDto>, response: Response<UserDto>) {
                     if (response.isSuccessful) {
                         Toast.makeText(this@ProfileActivity, "Profil berhasil diupdate!", Toast.LENGTH_SHORT).show()
-                        // Update session lokal juga
-                        sessionManager.saveUserDetail(response.body()!!.id, response.body()!!.role, response.body()!!.name)
+                        // Update session lokal jika perlu (tergantung respons body)
+                        response.body()?.let {
+                            sessionManager.saveUserDetail(it.id, it.role, it.name)
+                        }
                     } else {
                         Toast.makeText(this@ProfileActivity, "Gagal update profil", Toast.LENGTH_SHORT).show()
                     }
@@ -90,8 +94,10 @@ class ProfileActivity : AppCompatActivity() {
             }
 
             val request = ChangePasswordDto(oldPass, newPass)
-            RetrofitClient.getInstance(this).changePassword(request).enqueue(object : Callback<ApiResponse> {
-                override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+
+            // FIX: changePassword return Void, bukan ApiResponse
+            RetrofitClient.getInstance(this).changePassword(token, request).enqueue(object : Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
                     if (response.isSuccessful) {
                         Toast.makeText(this@ProfileActivity, "Password berhasil diganti", Toast.LENGTH_SHORT).show()
                         binding.etOldPassword.text?.clear()
@@ -100,7 +106,7 @@ class ProfileActivity : AppCompatActivity() {
                         Toast.makeText(this@ProfileActivity, "Gagal: Password lama salah?", Toast.LENGTH_SHORT).show()
                     }
                 }
-                override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                override fun onFailure(call: Call<Void>, t: Throwable) {
                     Toast.makeText(this@ProfileActivity, "Error koneksi", Toast.LENGTH_SHORT).show()
                 }
             })
@@ -110,7 +116,7 @@ class ProfileActivity : AppCompatActivity() {
         binding.btnLogout.setOnClickListener {
             sessionManager.logout()
             val intent = Intent(this, LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK // Hapus history back
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
         }

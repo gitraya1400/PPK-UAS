@@ -18,6 +18,12 @@
         <activity android:name=".ui.pertemuan.PertemuanActivity" />
         <activity android:name=".ui.soal.SoalActivity" />
         <activity android:name=".ui.auth.RegisterActivity" />
+        <activity android:name=".ui.admin.AddMataKuliahActivity" />
+        <activity
+            android:name=".ui.admin.DetailMatkulAdminActivity"
+            android:exported="false"
+            android:label="Detail Mata Kuliah" />
+
 
         <activity android:name=".MainActivity" />
         <activity android:name=".ui.profile.ProfileActivity" />
